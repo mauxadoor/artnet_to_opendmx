@@ -63,6 +63,10 @@ pub fn create_runner(arguments: Arguments) -> Result<RunnerUpdateReciever, Runne
             return Err(RunnerCreationError::DeviceUpdateError(error));
         }
     }
+    if arguments.options.cyclicreopen {
+        debug!("Enable cyclic reopening of com port");
+        dmx.set_cyclic_reopen();
+    }
     info!("Started!");
 
 

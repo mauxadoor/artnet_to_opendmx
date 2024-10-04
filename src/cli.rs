@@ -17,13 +17,16 @@ Arguments:
   <DEVICE_NAME>  The interface port name
 
 Options:
-  -c  --controller A specific controller to listen to (localhost is 0.0.0.0)  (default: all)
-  -p  --port       The port to listen to                                      (default: 6454)
-  -n  --name       The name of the node
-  -b  --break      The minimum time in milliseconds between two dmx packets   (default: 25)
-  -r  --remember   Keep the last dmx values if the art-net connection is lost (default: false)
-      --verbose    Print information about the received art-net packets       (default: false)
-      --nogui      Disable the GUI                                            (default: false)";
+  -c  --controller      A specific controller to listen to (localhost is 0.0.0.0)  (default: all)
+  -p  --port            The port to listen to                                      (default: 6454)
+  -n  --name            The name of the node
+  -b  --break           The minimum time in milliseconds between two dmx packets   (default: 25)
+  -r  --remember        Keep the last dmx values if the art-net connection is lost (default: false)
+      --cyclic-reopen   Reopen the serial port after each dmx telegram.            (default: false)
+                        This is a workaround for imx_uart as the break signal
+                        on this devices only works once after opening the port
+      --verbose         Print information about the received art-net packets       (default: false)
+      --nogui           Disable the GUI                                            (default: false)";
 
 ///A tool for controlling an open dmx interface via art-net
 #[derive(Debug)]
@@ -93,6 +96,7 @@ impl Command {
                         skip = true;
                     },
                     "-r" | "--remember" => options.remember = true,
+                    "--cyclic-reopen" => options.cyclicreopen = true,
                     "--verbose" => options.verbose = true,
                     "--nogui" => gui = false,
                     _ => {
@@ -155,6 +159,8 @@ pub struct Options {
     pub break_time: Option<Duration>,
     ///Keep the last dmx values if the art-net connection is lost (default: false)
     pub remember: bool,
+    ///Reopen the serial port after each dmx telegram.            (default: false)
+    pub cyclicreopen: bool,
     ///Print information about the received art-net packets (default: false)
     pub verbose: bool,
 }
